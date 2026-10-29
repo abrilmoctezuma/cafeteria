@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menú de cafetería que se adapta</title>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Bricolage+Grotesque:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eef1f4;--panel:#fff;--text:#16202a;--mut:#5b6b7a;--line:#d5dce3;--acc:#0f6f8a;--onacc:#fff;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151a;--panel:#192129;--text:#e8eef3;--mut:#93a3b1;--line:#2b3641;--acc:#5cc3dc;--onacc:#06232c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10151a;--panel:#192129;--text:#e8eef3;--mut:#93a3b1;--line:#2b3641;--acc:#5cc3dc;--onacc:#06232c;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Bricolage Grotesque',system-ui,sans-serif;line-height:1.45}
+.app{display:grid;grid-template-columns:minmax(280px,340px) 1fr;gap:20px;max-width:1100px;margin:0 auto;padding:20px}
+@media(max-width:780px){.app{grid-template-columns:1fr;padding:12px}.sim{position:static!important}}
+.sim{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;align-self:start;position:sticky;top:16px}
+.sim h2{margin:0 0 2px;font-size:1.15rem}
+.sim .sub{margin:0 0 16px;color:var(--mut);font-size:.88rem}
+.fld{margin-bottom:18px}
+.fld>label,.fld>.lb{display:flex;justify-content:space-between;align-items:baseline;font-weight:600;font-size:.92rem;margin-bottom:8px}
+.big{font-size:1.6rem;font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.wg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button{font:inherit;color:inherit;cursor:pointer}
+.wb{text-align:left;padding:9px 11px;border:1px solid var(--line);background:transparent;border-radius:10px;display:flex;flex-direction:column}
+.wb small{color:var(--mut)}
+.wb[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+.wb[aria-pressed=true] small{color:inherit;opacity:.85}
+.lvl{display:inline-block;font-size:.8rem;font-weight:600;padding:2px 10px;border-radius:99px;border:1px solid var(--line)}
+.lvl[data-l="1"]{background:#f5c542;color:#2b2100;border-color:#f5c542}
+.lvl[data-l="2"]{background:#d6443a;color:#fff;border-color:#d6443a}
+.stat{font-size:.85rem;color:var(--mut);border-top:1px solid var(--line);padding-top:12px;margin:0}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+.menu{--p:#e6f4ea;--i:#153a2a;--a:#cf7a1b;--l:#c5dccd;background:var(--p);color:var(--i);border-radius:14px;padding:30px 28px;position:relative;overflow:hidden;transition:background .5s,color .5s}
+.menu[data-slot=c]{--p:#f6e8f0;--i:#3b1a2e;--a:#b02a6b;--l:#e3c9d8}
+.menu[data-slot=n]{--p:#1e1b1a;--i:#f1e9e4;--a:#e8a35c;--l:#3a3532}
+.menu>*{position:relative;z-index:1}
+.menu[data-w=lluvia]::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:repeating-linear-gradient(100deg,transparent 0 14px,rgba(120,160,200,.18) 14px 15px);animation:rain .6s linear infinite}
+@keyframes rain{to{background-position:-30px 60px}}
+@media(prefers-reduced-motion:reduce){.menu[data-w=lluvia]::after,.list{animation:none}}
+.brand{margin:0;font-size:.9rem;opacity:.75}
+h1{font-family:'Young Serif',Georgia,serif;font-weight:400;font-size:clamp(2rem,6vw,3rem);line-height:1.05;margin:6px 0 10px}
+.ctx{margin:0 0 4px;max-width:60ch}
+.alert{margin:16px 0 4px;padding:12px 14px;border-radius:10px;background:var(--i);color:var(--p);font-weight:600}
+.rec{margin:20px 0 6px;padding:14px 16px;border-left:4px solid var(--a);background:color-mix(in srgb,var(--a) 12%,transparent);border-radius:0 10px 10px 0}
+.rec h2{font-family:'Young Serif',Georgia,serif;font-weight:400;font-size:1.4rem;margin:2px 0 4px}
+.rec p{margin:0;font-size:.95rem}
+.rec span{font-size:.85rem;opacity:.8}
+.list{animation:f .3s}
+@keyframes f{from{opacity:.2}to{opacity:1}}
+h3{font-family:'Young Serif',Georgia,serif;font-weight:400;font-size:1.3rem;margin:26px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--a)}
+.it{padding:10px 0;border-bottom:1px solid var(--l)}
+.row{display:flex;gap:8px;align-items:baseline}
+.row b{font-weight:600}
+.dots{flex:1;border-bottom:2px dotted var(--l);transform:translateY(-3px)}
+.price{font-variant-numeric:tabular-nums;font-weight:600}
+.d{margin:2px 0 0;font-size:.9rem;opacity:.78}
+.tg{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tg span{font-size:.78rem;border:1px solid var(--a);border-radius:99px;padding:1px 9px}
+.tg .q{background:var(--a);color:var(--p);font-weight:600}
+.tot{margin-top:28px;padding:14px 16px;border:1.5px solid var(--a);border-radius:10px}
+.tot b{font-size:1.1rem}
+.tot p{margin:4px 0 0;font-size:.92rem}
+.hid{margin:18px 0 0;font-size:.85rem;opacity:.75}
+.menu{min-height:520px}
+.menu[data-slot=a]{--p:#ffe7d1;--i:#4a2210;--a:#d4501e;--l:#f0c9a8}
+.sky{position:absolute;left:0;right:0;top:0;height:200px;z-index:0;overflow:hidden;transition:background .6s}
+.menu[data-slot=d] .sky{background:linear-gradient(180deg,#ffe28a,#e6f4ea)}
+.menu[data-slot=c] .sky{background:linear-gradient(180deg,#ff9fc4,#f6e8f0)}
+.menu[data-slot=a] .sky{background:linear-gradient(180deg,#ff8f5a,#ffe7d1)}
+.menu[data-slot=n] .sky{background:linear-gradient(180deg,#0b1030,#1e1b1a)}
+.orb{position:absolute;width:84px;height:84px;border-radius:50%;transition:all .9s}
+.menu[data-slot=d] .orb{right:6%;top:84px;background:#ffc93c;box-shadow:0 0 60px 20px #ffd96b}
+.menu[data-slot=c] .orb{right:18%;top:14px;background:#fff3b0;box-shadow:0 0 70px 24px #ffe36b}
+.menu[data-slot=a] .orb{right:8%;top:100px;background:#ff6a3d;box-shadow:0 0 70px 24px #ff8f5a}
+.menu[data-slot=n] .orb{right:6%;top:26px;background:#f4efe0;box-shadow:0 0 40px 10px rgba(244,239,224,.45),inset -14px -6px 0 #cfc8b0}
+.brand,h1,.ctx{max-width:calc(100% - 120px)}
+.fx{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:0;transition:opacity .6s}
+.menu[data-w=sol] .fx{opacity:1;background:radial-gradient(circle at 90% 0,rgba(255,220,90,.35),transparent 55%)}
+.menu[data-w=calor] .fx{opacity:1;background:radial-gradient(circle at 85% 0,rgba(255,110,20,.5),transparent 65%);animation:heat 2.5s ease-in-out infinite alternate}
+.menu[data-w=nub] .fx{opacity:1;background:radial-gradient(ellipse 200px 60px at 25% 70px,rgba(150,160,175,.5),transparent),radial-gradient(ellipse 260px 70px at 70% 40px,rgba(150,160,175,.5),transparent),linear-gradient(rgba(130,140,155,.16),rgba(130,140,155,.16))}
+.menu[data-w=lluvia] .fx{opacity:1;background:linear-gradient(rgba(60,90,130,.24),rgba(60,90,130,.24))}
+.menu[data-w=norte] .fx{opacity:1;background:linear-gradient(rgba(150,200,255,.22),rgba(150,200,255,.22)),radial-gradient(circle,rgba(255,255,255,.95) 1.5px,transparent 2px) 0 0/38px 38px;animation:snow 6s linear infinite}
+@keyframes heat{to{opacity:.5}}
+@keyframes snow{to{background-position:0 0,0 38px}}
+.it{animation:slide .45s both}
+@keyframes slide{from{opacity:0;transform:translateX(-16px)}}
+.tg .nw{background:var(--i);color:var(--p);font-weight:600;border-color:var(--i)}
+.chg{margin:14px 0 0;font-size:.88rem;padding:10px 12px;border:1px dashed var(--a);border-radius:10px;background:var(--p)}
+@media(prefers-reduced-motion:reduce){.it,.fx{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sim" aria-label="Simulador">
+    <h2>Simula la situación</h2>
+    <p class="sub">Mueve los controles y mira cómo cambia la carta.</p>
+    <div class="fld">
+      <label for="t">Hora <span class="big" id="tl">08:30</span></label>
+      <input type="range" id="t" min="14" max="43" value="17">
+    </div>
+    <div class="fld">
+      <div class="lb">Clima</div>
+      <div class="wg" id="wg"></div>
+    </div>
+    <div class="fld">
+      <label for="q">Personas en la fila <span class="big" id="qn">2</span></label>
+      <input type="range" id="q" min="0" max="20" value="2">
+      <p style="margin:8px 0 0"><span class="lvl" id="lv" data-l="0">Fila tranquila</span></p>
+    </div>
+    <p class="stat" id="stat"></p>
+  </aside>
+
+  <main class="menu" id="menu" data-slot="d" data-w="sol" aria-live="polite">
+    <div class="sky"><div class="orb"></div></div><div class="fx"></div>
+    <p class="brand">Grano Norte, cafetería en Tampico</p>
+    <div id="out"></div>
+  </main>
+</div>
+
+<script>
+const W={
+  sol:{n:'Soleado',t:31,f:1,h:-1,m:'Día soleado: lo frío va primero.'},
+  calor:{n:'Calor extremo',t:38,f:2,h:-2,m:'Calor fuerte: ocultamos lo caliente y subimos lo helado.'},
+  nub:{n:'Nublado',t:26,f:0,h:0,m:'Cielo nublado: carta completa.'},
+  lluvia:{n:'Lluvia',t:21,f:-1,h:2,m:'Está lloviendo: suben las bebidas calientes.'},
+  norte:{n:'Norte frío',t:11,f:-2,h:2,m:'Entró el norte: café y chocolate caliente al frente.'}
+};
+const S={d:{n:'Desayuno y café',g:'Buenos días'},c:{n:'Comida ligera',g:'Buen provecho'},a:{n:'Merienda',g:'Buena tarde'},n:{n:'Café de la noche',g:'Buenas noches'}};
+const CATS=['Calientes','Frías','Para comer','Dulces'];
+const MAXP=[99,4,2];
+const SP={sol:'Especial de sol',calor:'Para sobrevivir al calor',nub:'Para el día gris',lluvia:'Para la lluvia',norte:'Para el norte frío'};
+const ORD={sol:[1,3,0,2],calor:[1,3,0,2],nub:[0,1,2,3],lluvia:[0,2,3,1],norte:[0,2,3,1]};
+const LV=['Fila tranquila','Fila moderada','Fila larga'];
+// nombre, descripción, precio, categoría, horarios (d c n), clima (f frío, h caliente, x neutro), minutos de preparación
+const I=[
+['Espresso','Doble, intenso',40,0,'dcn','h',1],
+['Americano','Espresso con agua caliente',45,0,'dcn','h',1],
+['Café de olla','Piloncillo y canela',45,0,'dcn','h',1],
+['Capuchino','Espuma cremosa de leche',65,0,'dcn','h',3],
+['Latte de vainilla','Leche vaporizada y jarabe de vainilla',70,0,'dcn','h',3],
+['Chai latte','Té especiado con leche',70,0,'dcn','h',3],
+['Moka','Café, chocolate y leche',75,0,'dcn','h',4],
+['Chocolate caliente','Espeso, con leche',60,0,'dn','h',3],
+['Café de filtro V60','Preparado a mano, notas frutales',80,0,'dcn','x',6],
+['Cold brew','Café en frío por 12 horas',65,1,'dcn','f',1],
+['Té helado de durazno','Con hielo y rodaja de limón',50,1,'dcn','f',1],
+['Limonada con menta','Mineral, poca azúcar',50,1,'dcn','f',2],
+['Latte helado','Espresso, leche y hielo',75,1,'dcn','f',2],
+['Frappé de café','Licuado con crema y chocolate',85,1,'dcn','f',5],
+['Smoothie de mango','Mango, yogur y hielo',80,1,'dc','f',5],
+['Baguette de jamón y queso','Ya preparado, listo para llevar',95,2,'dcn','x',2],
+['Sopa del día','Caliente, con pan',90,2,'cn','h',3],
+['Pan tostado con aguacate','Con huevo o jitomate',85,2,'dc','x',4],
+['Ensalada fresca','Pollo, lechuga, fruta y vinagreta',105,2,'cn','f',4],
+['Panini caprese','Mozzarella, jitomate y albahaca',115,2,'cn','x',6],
+['Molletes','Frijol, queso y pico de gallo',80,2,'d','x',6],
+['Sándwich de pollo','Pollo, aguacate y chipotle',110,2,'cn','x',7],
+['Chilaquiles','Verdes o rojos, con huevo',110,2,'d','h',9],
+['Hotcakes','Tres piezas con cajeta',100,2,'d','x',10],
+['Concha','Pan dulce del día',30,3,'dn','x',1],
+['Croissant','Mantequilla, recién horneado',45,3,'dcn','x',1],
+['Galleta de chispas','Grande y suave',35,3,'dcn','x',1],
+['Muffin de arándano','Del día',40,3,'dcn','x',1],
+['Brownie','Con nuez',55,3,'cn','x',1],
+['Rebanada de pay de queso','Con zarzamora',70,3,'cn','x',1],
+['Affogato','Helado de vainilla con espresso',75,3,'cn','f',2],
+['Waffle con fruta','Con miel y crema',95,3,'dc','x',8]
+];
+const st={h:17,w:'sol',q:2};let prev=null;
+const $=s=>document.querySelector(s);
+const slot=()=>{const hr=Math.floor(st.h/2);return hr<12?'d':hr<15?'c':hr<18?'a':'n'};
+const lvl=()=>st.q<=3?0:st.q<=7?1:2;
+const money=n=>'$'+n;
+
+function all(){
+  const w=W[st.w],sl=slot();
+  return I.filter(x=>x[4].includes(sl=='a'?'c':sl)).map(([n,d,p,c,t,k,m])=>({n,d,p,c,k,m,sc:k=='f'?w.f:k=='h'?w.h:0})).filter(x=>x.sc>-2).filter(x=>sl!='a'||x.c!=2||x.m<=4);
+}
+const best=(L,cats)=>L.filter(x=>cats.includes(x.c)).sort((a,b)=>b.sc-a.sc||a.m-b.m)[0];
+
+function render(){
+  const sl=slot(),w=W[st.w],l=lvl();
+  const base=all(),L=base.filter(x=>x.m<=MAXP[l]);
+  const m=$('#menu');m.dataset.slot=sl;m.dataset.w=st.w;const cur=new Set(L.map(x=>x.n));
+  const hr=Math.floor(st.h/2);
+  $('#tl').textContent=String(hr).padStart(2,'0')+':'+(st.h%2?'30':'00');
+  $('#qn').textContent=st.q;
+  const lv=$('#lv');lv.textContent=LV[l];lv.dataset.l=l;
+  const slow=Math.round(st.q*1.5),fast=Math.round(st.q*0.8);
+  $('#stat').textContent=l?'Espera estimada: unos '+slow+' min con carta completa, unos '+fast+' min con carta rápida. Ahora se muestran '+L.length+' de '+base.length+' opciones.':'Con poca fila se muestra toda la carta ('+L.length+' opciones). Espera estimada: unos '+slow+' min.';
+  document.querySelectorAll('.wb').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k==st.w));
+  let h='<h1>'+S[sl].n+'</h1><p class="ctx">'+S[sl].g+'. '+w.m+'</p>';
+  if(prev){const gone=[...prev].filter(n=>!cur.has(n)),nu=L.filter(x=>!prev.has(x.n)).length;if(gone.length||nu)h+='<div class="chg"><b>Cambió la carta:</b> '+nu+' opciones nuevas'+(gone.length?'. Salen: '+gone.slice(0,6).join(', ')+(gone.length>6?' y '+(gone.length-6)+' más':''):'')+'.</div>';} if(l) h+='<div class="alert">Hay '+st.q+' personas en la fila. Mostramos solo lo que sale en '+MAXP[l]+' min o menos.</div>';
+  const r=best(L,[0,1,2,3]);
+  if(r){
+    const why=r.sc>=1?(r.k=='f'?'Es frío para este clima.':'Es caliente para este clima.'):'Va bien con esta hora.';
+    h+='<div class="rec"><span>'+(l?'Pide esto primero':SP[st.w])+'</span><h2>'+r.n+'</h2><p>'+r.d+'. '+why+' Listo en '+r.m+' min.</p></div>';
+  }
+  h+='<div class="list">';let k=0;const first={d:2,a:3}[sl],ord=first===undefined?ORD[st.w]:[first,...ORD[st.w].filter(i=>i!=first)];
+  ord.forEach(ci=>{const c=CATS[ci];
+    const items=L.filter(x=>x.c==ci).sort((a,b)=>b.sc-a.sc||(l?a.m-b.m:0));
+    if(!items.length) return;
+    h+='<h3>'+c+'</h3>';
+    items.forEach(x=>{
+      const tg=[];if(prev&&!prev.has(x.n))tg.push('<span class="nw">Nuevo</span>');tg.push('<span class="'+(x.m<=2?'q':'')+'">'+(x.m<=2?'Rápido, ':'')+x.m+' min</span>');
+      if(x.sc>=1) tg.push('<span>'+(x.k=='f'?'Fresco':'Reconforta')+'</span>');
+      h+='<div class="it" style="animation-delay:'+(Math.min(k++,14)*40)+'ms"><div class="row"><b>'+x.n+'</b><span class="dots"></span><span class="price">'+money(x.p)+'</span></div><p class="d">'+x.d+'</p><div class="tg">'+tg.join('')+'</div></div>';
+    });
+  });
+  h+='</div>';
+  const dr=best(L,[0,1]),fd=best(L,[2,3]);
+  if(dr&&fd) h+='<div class="tot"><b>Combo sugerido: '+money(dr.p+fd.p)+'</b><p>'+dr.n+' con '+fd.n+'. Listo en unos '+Math.max(dr.m,fd.m)+' min.</p></div>';
+  if(base.length>L.length) h+='<p class="hid">'+(base.length-L.length)+' opciones que tardan más están ocultas mientras haya fila.</p>';
+  $('#out').innerHTML=h;prev=cur;
+}
+$('#wg').innerHTML=Object.entries(W).map(([k,v])=>'<button class="wb" data-k="'+k+'" aria-pressed="false">'+v.n+'<small>'+v.t+' °C</small></button>').join('');
+$('#wg').addEventListener('click',e=>{const b=e.target.closest('.wb');if(b){st.w=b.dataset.k;render()}});
+$('#t').addEventListener('input',e=>{st.h=+e.target.value;render()});
+$('#q').addEventListener('input',e=>{st.q=+e.target.value;render()});
+render();
+</script>
+</body>
+</html>
